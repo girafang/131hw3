@@ -2,10 +2,12 @@
 title: "Homework 3"
 author: "PSTAT 131 John Wei"
 output:
-    html_document:
-      toc: true
-      toc_float: true
-      code_folding: show
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
@@ -39,21 +41,21 @@ library(pROC)
 set.seed(4167)
 ```
 
-```
+```{r}
 titanic <- read_csv("titanic.csv")
 ```
 
-```
+```{r}
 titanic
 titanic$survived <- factor(titanic$survived)
 titanic$pclass <- factor(titanic$pclass)
 ```
 
-```
+```{r}
 titan <- titanic %>% arrange(desc(survived))
 ```
 
-```
+```{r}
 titan
 ```
 
@@ -70,7 +72,7 @@ titan_train <- training(titan_split)
 titan_test <- testing(titan_split)
 ```
 
-```
+```{r}
 titan_train %>% print(n = 100)
 ```
 
@@ -94,10 +96,10 @@ Using a barplot, we see more people in the training set did not survived - appro
 Using the **training** data set, create a correlation matrix of all continuous variables. Create a visualization of the matrix, and describe any patterns you see. Are any predictors correlated with each other? Which ones, and in which direction?
 
 ```{r}
-cor_titan <- titan_train %>%
-  select(where(is.numeric)) %>%
-  correlate()
-rplot(cor_titan) 
+cor_titan_train <- titan_train %>%
+  dplyr::select(-c(survived, pclass, name, sex, ticket, cabin, embarked)) %>%
+  correlate(use = "pairwise.complete.obs", method = "pearson")
+rplot(cor_titan_train)
 ```
 
 Most of the variables do not have correlation with each other. sib_sp and parch have strong positive correlation, parch and fare have a slightly positive correlation, sib_sp and fare have a very slight positive correlation, age and parch have a slightly negative correlation, and sib_sp and age have a decently negative correlation.
